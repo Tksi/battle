@@ -3,7 +3,7 @@
   import BattleZone from './BattleZone.svelte';
   let cardArr = [1, 2, 3, 4, 5, 6];
   let clickable = true;
-  let battleCardArr = [-1, -1];
+  let battleCardArr = [-1, -1, -1];
   $: console.log(cardArr);
 </script>
 
