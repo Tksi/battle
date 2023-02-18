@@ -1,6 +1,5 @@
 <script lang="ts">
   export let number = -1;
-
   export let clickable = false;
   const shadowColorMap = new Map([
     [0, '#ef5350'],
@@ -46,6 +45,10 @@
 
   .clickable:hover span {
     text-shadow: 3px 3px 0 var(--shadowColor);
+  }
+
+  .hidden {
+    background-color: rgb(65, 103, 135);
   }
 
   .hidden > .number {
