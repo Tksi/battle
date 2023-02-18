@@ -1,6 +1,5 @@
 <script lang="ts">
-  export let number: number = 0;
-
+  export let number = -1;
   const shadowColorMap = new Map([
     [0, '#ef5350'],
     [1, '#ba68c8'],
@@ -15,24 +14,25 @@
   ]);
 </script>
 
-<div class="card">
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<div class="card" class:hidden={number === -1} on:click>
   <span class="number" style="--shadowColor:{shadowColorMap.get(number)}"
     >{number}</span
   >
 </div>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
-
   .card {
     user-select: none;
-    width: 100px;
-    height: 100px;
+    max-width: 100px;
+    max-height: 100px;
+    width: 15vw;
+    height: 15vw;
     background-color: rgb(245, 243, 237);
     border-radius: 20%;
     display: inline-grid;
     place-items: center;
-    font-size: 5rem;
+    font-size: min(10vw, 4rem);
     font-family: 'Dancing Script', cursive;
     box-shadow: 0 1px 3px rgba(128, 128, 128, 0.5);
     margin: 5px;
@@ -44,5 +44,13 @@
 
   .card:hover span {
     text-shadow: 3px 3px 0 var(--shadowColor);
+  }
+
+  .hidden > .number {
+    visibility: hidden;
+  }
+
+  .hidden:hover {
+    transform: translateY(0);
   }
 </style>
