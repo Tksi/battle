@@ -1,5 +1,6 @@
 <script lang="ts">
   export let number = -1;
+
   export let clickable = false;
   const shadowColorMap = new Map([
     [0, '#ef5350'],
@@ -29,7 +30,7 @@
     max-height: 100px;
     width: 15vw;
     height: 15vw;
-    background-color: rgb(245, 243, 237);
+    background-color: rgb(247, 246, 243);
     border-radius: 20%;
     display: inline-grid;
     place-items: center;

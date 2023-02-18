@@ -11,6 +11,7 @@ const config = {
     adapter: adapter(),
     alias: {
       '$/*': 'src/routes/*',
+      $types: 'src/types/index.ts',
     },
   },
 };
