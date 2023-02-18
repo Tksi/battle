@@ -1,5 +1,6 @@
 <script lang="ts">
   export let number = -1;
+
   export let clickable = false;
   const shadowColorMap = new Map([
     [0, '#ef5350'],

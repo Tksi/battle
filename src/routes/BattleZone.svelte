@@ -1,21 +1,23 @@
 <script lang="ts">
   import Card from './Card.svelte';
+  import { gameState } from '$/store';
 
-  export let battleCardArr = [-1, -1];
-  $: console.log(battleCardArr);
+  $: userStateArr = $gameState.userStates
+    ? [...$gameState.userStates?.values()]
+    : [];
 </script>
 
 <div class="container">
   <span class="battleCardContainer">
-    <Card number={battleCardArr[0]} />
-    <div>Tksi(0)</div>
+    <Card number={userStateArr[0]?.battleCard ?? -1} />
+    <div>{userStateArr[0]?.userName ?? ''}</div>
   </span>
 
-  {#each battleCardArr.slice(1) as battleCard}
+  {#each userStateArr.slice(1) as userState}
     <span class="vs">vs</span>
     <span class="battleCardContainer">
-      <Card number={battleCard} />
-      <div>Tksi(0)</div>
+      <Card number={userState.battleCard ?? -1} />
+      <div>{userState.userName}</div>
     </span>
   {/each}
 </div>
