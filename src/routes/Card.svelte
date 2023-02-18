@@ -1,5 +1,6 @@
 <script lang="ts">
   export let number = -1;
+  export let clickable = false;
   const shadowColorMap = new Map([
     [0, '#ef5350'],
     [1, '#ba68c8'],
@@ -15,7 +16,7 @@
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="card" class:hidden={number === -1} on:click>
+<div class="card" class:hidden={number === -1} class:clickable on:click>
   <span class="number" style="--shadowColor:{shadowColorMap.get(number)}"
     >{number}</span
   >
@@ -38,11 +39,11 @@
     margin: 5px;
   }
 
-  .card:hover {
+  .clickable:hover {
     transform: translateY(-3px);
   }
 
-  .card:hover span {
+  .clickable:hover span {
     text-shadow: 3px 3px 0 var(--shadowColor);
   }
 
