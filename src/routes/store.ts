@@ -7,7 +7,12 @@ import { replacer, reviver } from '$lib/jsonMap';
 
 type StatePublic = { [key: string]: unknown };
 
-type StateUser = { cardArr: number[]; battleCard: number; score: number };
+export type StateUser = {
+  cardArr: number[];
+  battleCard: number;
+  score: number;
+  clickable: boolean;
+};
 
 export const myUserId = writable<UserId>();
 
@@ -62,7 +67,7 @@ if (browser) {
     ws.send(JSON.stringify(joinMessage));
   });
 
-  ws.addEventListener('message', ({ data: JSONmessage }) => {
+  ws.addEventListener('message', ({ data: JSONmessage }: { data: string }) => {
     try {
       const message = JSON.parse(JSONmessage, reviver) as ResMessage<
         StatePublic,
@@ -86,5 +91,9 @@ if (browser) {
     } catch (err) {
       console.error(err);
     }
+  });
+
+  ws.addEventListener('close', () => {
+    location.reload();
   });
 }

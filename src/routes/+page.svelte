@@ -1,26 +1,30 @@
 <script lang="ts">
   import BattleZone from './BattleZone.svelte';
   import Card from './Card.svelte';
-  import { gameStateR, myUserId } from '$/store';
+  import { gameStateR, gameStateW, myUserId } from '$/store';
 
-  let clickable = true;
-  let battleCardArr = [-1, -1, -1];
   $: console.log($gameStateR);
+
+  $: myUserState = $gameStateR.userStates?.get($myUserId);
 </script>
+
+<svelte:head>
+  <title>Battle</title>
+  <meta name="robots" content="noindex nofollow" />
+</svelte:head>
 
 <div class="container">
   <BattleZone />
-
   <div class="cardContainer">
-    {#each $gameStateR.userStates?.get($myUserId)?.cardArr ?? [] as number, index}
+    {#each myUserState?.cardArr ?? [] as number, index}
       <Card
         {number}
-        {clickable}
+        clickable={myUserState?.clickable}
         on:click={() => {
-          if (clickable) {
-            battleCardArr[0] = cardArr.splice(index, 1)[0];
-            cardArr = cardArr;
-            clickable = false;
+          if (myUserState?.clickable) {
+            myUserState.battleCard = myUserState.cardArr.splice(index, 1)[0];
+            myUserState.clickable = false;
+            $gameStateW = $gameStateR;
           }
         }}
       />

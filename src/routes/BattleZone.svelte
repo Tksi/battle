@@ -1,40 +1,74 @@
 <script lang="ts">
   import Card from './Card.svelte';
+  import type { StateUser } from '$/store';
+  import type { UserId, UserState } from '$types';
   import { gameStateR, gameStateW, myUserId } from '$/store';
 
   $: userStateArr = $gameStateR.userStates
-    ? [...$gameStateR.userStates?.values()]
+    ? [...$gameStateR.userStates?.entries()]
     : [];
 
-  const cardLen = 5;
-  // 初期化
   const startGame = () => {
-    const tmpGameState = structuredClone($gameStateR);
-    tmpGameState.publicState.turnUserId = $myUserId;
-    for (const [, userState] of tmpGameState.userStates) {
+    const cardLen = 5;
+    // ターンベースではないのでnull以外ならなんでもよい
+    $gameStateR.publicState.turnUserId = $myUserId;
+
+    // 初期化
+    for (const [, userState] of $gameStateR.userStates) {
       userState.score = 0;
+      userState.clickable = true;
       userState.battleCard = -1;
       userState.cardArr = new Array(cardLen)
         .fill('')
         .map(() => Math.trunc(Math.random() * (cardLen + 1)));
     }
-    $gameStateW = tmpGameState;
+
+    $gameStateW = $gameStateR;
+  };
+
+  $: showCard = (userId: UserId, userState: UserState<StateUser>): number => {
+    if (
+      userId === $myUserId ||
+      userStateArr.every(([, userState]) => userState.clickable === false)
+    ) {
+      return userState?.battleCard ?? -1;
+    }
+
+    return -1;
+  };
+
+  $: isWinner = (userState: UserState<StateUser>): boolean => {
+    if ((userState?.battleCard ?? -1) === -1) return false;
+
+    if (userStateArr.every(([, userState]) => userState.clickable === false)) {
+      return (
+        userState.battleCard ===
+        userStateArr
+          .map(([, userState]) => userState.battleCard)
+          .reduce((a, b) => Math.max(a, b))
+      );
+    }
+
+    return false;
   };
 </script>
 
 <div class="container">
-  <span class="battleCardContainer">
-    <Card number={userStateArr[0]?.battleCard ?? -1} />
+  <span
+    class="battleCardContainer"
+    class:winner={isWinner(userStateArr[0]?.[1])}
+  >
+    <Card number={showCard(userStateArr[0]?.[0], userStateArr[0]?.[1])} />
     <div>
-      {userStateArr[0]?.userName ?? ''}
-      {userStateArr[0]?.score ?? ''}
+      {userStateArr[0]?.[1].userName ?? ''}
+      {userStateArr[0]?.[1].score ?? ''}
     </div>
   </span>
 
-  {#each userStateArr.slice(1) as userState}
+  {#each userStateArr.slice(1) as [userId, userState]}
     <span class="vs">vs</span>
-    <span class="battleCardContainer">
-      <Card number={userState.battleCard ?? -1} />
+    <span class="battleCardContainer" class:winner={isWinner(userState)}>
+      <Card number={showCard(userId, userState)} />
       <div>{userState.userName} {userState.score ?? ''}</div>
     </span>
   {/each}
@@ -57,6 +91,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  .winner {
+    border: 5px dashed rgb(50, 228, 178);
   }
 
   .vs {
