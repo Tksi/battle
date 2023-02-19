@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 import { v4 as uuidv4 } from 'uuid';
 import type { GameId, GameState, ReqMessage, ResMessage, UserId } from '$types';
 import { browser } from '$app/environment';
@@ -7,15 +7,19 @@ import { replacer, reviver } from '$lib/jsonMap';
 
 type StatePublic = { [key: string]: unknown };
 
-type StateUser = { cardArr: number[]; battleCard: number };
+type StateUser = { cardArr: number[]; battleCard: number; score: number };
 
 export const myUserId = writable<UserId>();
 
-export const gameState = writable<GameState<StatePublic, StateUser>>({});
+export const gameStateW = writable<GameState<StatePublic, StateUser>>({});
+
+export const gameStateR = writable<GameState<StatePublic, StateUser>>({});
 
 let ws: WebSocket;
 let gameId: GameId;
-gameState.subscribe((state) => {
+gameStateW.subscribe((state) => {
+  gameStateR.set(get(gameStateW));
+
   if (ws && state.publicState.turnUserId !== null) {
     ws.send(
       JSON.stringify(
@@ -32,9 +36,8 @@ gameState.subscribe((state) => {
 
 if (browser) {
   ws = new WebSocket(PUBLIC_WS ?? 'ws://localhost:4567');
-  let userName = localStorage.getItem('userName')!;
 
-  const gameId = new URL(location.href).searchParams.get('gameId') as GameId;
+  gameId = new URL(location.href).searchParams.get('gameId') as GameId;
   const setGameId = () =>
     (location.href = `${location.origin}?${new URLSearchParams([
       ['gameId', `GAME-${uuidv4()}`],
@@ -44,6 +47,7 @@ if (browser) {
     setGameId();
   }
 
+  let userName = localStorage.getItem('userName')!;
   ws.addEventListener('open', () => {
     while (!userName) {
       userName = prompt('name?')!;
@@ -74,7 +78,7 @@ if (browser) {
         }
 
         case 'GAMESTATE': {
-          gameState.set(message.body);
+          gameStateR.set(message.body);
 
           break;
         }

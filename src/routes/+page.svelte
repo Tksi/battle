@@ -1,19 +1,18 @@
 <script lang="ts">
   import BattleZone from './BattleZone.svelte';
   import Card from './Card.svelte';
-  import { gameState } from '$/store';
+  import { gameStateR, myUserId } from '$/store';
 
-  let cardArr = [1, 2, 3, 4, 5];
   let clickable = true;
   let battleCardArr = [-1, -1, -1];
-  $: console.log($gameState);
+  $: console.log($gameStateR);
 </script>
 
 <div class="container">
   <BattleZone />
 
   <div class="cardContainer">
-    {#each cardArr as number, index}
+    {#each $gameStateR.userStates?.get($myUserId)?.cardArr ?? [] as number, index}
       <Card
         {number}
         {clickable}
