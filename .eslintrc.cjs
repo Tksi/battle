@@ -86,6 +86,7 @@ module.exports = {
     ],
     '@typescript-eslint/sort-type-union-intersection-members': 'warn',
     '@typescript-eslint/consistent-type-imports': 'warn',
+    'no-unsafe-optional-chaining': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
     'unicorn/prefer-top-level-await': 'off',

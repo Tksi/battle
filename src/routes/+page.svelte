@@ -3,8 +3,6 @@
   import Card from './Card.svelte';
   import { gameStateR, gameStateW, myUserId } from '$/store';
 
-  $: console.log($gameStateR);
-
   $: myUserState = $gameStateR.userStates?.get($myUserId);
 </script>
 
@@ -39,10 +37,16 @@
   }
 
   .container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     background-color: white;
     padding: 20px 0;
     border-radius: 20px;
     width: 100vw;
     max-width: 700px;
+    min-height: 315px;
+    box-shadow: -100px -100px 0 rgb(61, 61, 61), 100px 100px 0 rgb(61, 61, 61);
   }
 </style>

@@ -1,7 +1,8 @@
 <script lang="ts">
+  import { fade } from 'svelte/transition';
   import Card from './Card.svelte';
   import type { StateUser } from '$/store';
-  import type { GameId, UserId, UserState, UserStates } from '$types';
+  import type { UserId, UserState } from '$types';
   import { gameStateR, gameStateW, myUserId } from '$/store';
 
   const startGame = () => {
@@ -63,11 +64,13 @@
 
   $: if (isAllBattleCardAppeared()) {
     const isFirstUser = userStateArr[0]?.[0] === $myUserId;
+
     // 点数の加算処理(先頭の人)
     if (isFirstUser && userStateArr.length > 0) {
       const maxNumber = userStateArr
         .map(([, userState]) => userState.battleCard)
         .reduce((a, b) => Math.max(a, b));
+
       for (const [, userState] of userStateArr) {
         if (userState.battleCard === maxNumber) {
           userState.score++;
@@ -75,6 +78,7 @@
       }
 
       $gameStateW = $gameStateR;
+
       // 次ターン
       if (!isGameEnd()) {
         setTimeout(() => {
@@ -111,7 +115,8 @@
   {/each}
 
   {#if ($gameStateR.publicState?.turnUserId === null || isGameEnd()) && $gameStateR.userStates?.size >= 2}
-    <button on:click={startGame}>Start</button>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <div on:click={startGame} class="start" transition:fade>Start</div>
   {/if}
 </div>
 
@@ -137,5 +142,15 @@
 
   .vs {
     margin: 0 2px;
+  }
+
+  .start {
+    user-select: none;
+    position: absolute;
+    padding: 0 10px 3px 10px;
+    background-color: rgb(75, 176, 216);
+    border-radius: 10px;
+    color: white;
+    top: calc(50dvh + 100px);
   }
 </style>

@@ -73,7 +73,7 @@ if (browser) {
         StatePublic,
         StateUser
       >;
-      console.log(message);
+      console.debug(message);
 
       switch (message.type) {
         case 'USERID': {
