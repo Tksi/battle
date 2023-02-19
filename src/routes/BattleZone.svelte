@@ -1,12 +1,8 @@
 <script lang="ts">
   import Card from './Card.svelte';
   import type { StateUser } from '$/store';
-  import type { UserId, UserState } from '$types';
+  import type { GameId, UserId, UserState, UserStates } from '$types';
   import { gameStateR, gameStateW, myUserId } from '$/store';
-
-  $: userStateArr = $gameStateR.userStates
-    ? [...$gameStateR.userStates?.entries()]
-    : [];
 
   const startGame = () => {
     const cardLen = 5;
@@ -26,21 +22,34 @@
     $gameStateW = $gameStateR;
   };
 
+  $: userStateArr = $gameStateR.userStates
+    ? [...$gameStateR.userStates?.entries()]
+    : [];
+
   $: showCard = (userId: UserId, userState: UserState<StateUser>): number => {
-    if (
-      userId === $myUserId ||
-      userStateArr.every(([, userState]) => userState.clickable === false)
-    ) {
+    if (userId === $myUserId || isAllBattleCardAppeared()) {
       return userState?.battleCard ?? -1;
     }
 
     return -1;
   };
 
+  $: isAllBattleCardAppeared = (
+    arr: [UserId, UserState<StateUser>][] = userStateArr
+  ): boolean => {
+    return arr.every(([, userState]) => userState.clickable === false);
+  };
+
+  $: isGameEnd = (
+    arr: [UserId, UserState<StateUser>][] = userStateArr
+  ): boolean => {
+    return arr.every(([, userState]) => userState.cardArr.length === 0);
+  };
+
   $: isWinner = (userState: UserState<StateUser>): boolean => {
     if ((userState?.battleCard ?? -1) === -1) return false;
 
-    if (userStateArr.every(([, userState]) => userState.clickable === false)) {
+    if (isAllBattleCardAppeared()) {
       return (
         userState.battleCard ===
         userStateArr
@@ -51,6 +60,34 @@
 
     return false;
   };
+
+  $: if (isAllBattleCardAppeared()) {
+    const isFirstUser = userStateArr[0]?.[0] === $myUserId;
+    // 点数の加算処理(先頭の人)
+    if (isFirstUser && userStateArr.length > 0) {
+      const maxNumber = userStateArr
+        .map(([, userState]) => userState.battleCard)
+        .reduce((a, b) => Math.max(a, b));
+      for (const [, userState] of userStateArr) {
+        if (userState.battleCard === maxNumber) {
+          userState.score++;
+        }
+      }
+
+      $gameStateW = $gameStateR;
+      // 次ターン
+      if (!isGameEnd()) {
+        setTimeout(() => {
+          for (const [, userState] of userStateArr) {
+            userState.battleCard = -1;
+            userState.clickable = true;
+          }
+
+          $gameStateW = $gameStateR;
+        }, 2000);
+      }
+    }
+  }
 </script>
 
 <div class="container">
@@ -73,7 +110,7 @@
     </span>
   {/each}
 
-  {#if $gameStateR.publicState?.turnUserId === null && $gameStateR.userStates.size >= 2}
+  {#if ($gameStateR.publicState?.turnUserId === null || isGameEnd()) && $gameStateR.userStates?.size >= 2}
     <button on:click={startGame}>Start</button>
   {/if}
 </div>
@@ -84,6 +121,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-bottom: 10px;
   }
 
   .battleCardContainer {
