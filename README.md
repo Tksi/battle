@@ -1,38 +1,25 @@
-# create-svelte
+## Rule
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+[https://ja.wikipedia.org/wiki/ヤッツィー](https://ja.wikipedia.org/wiki/%E3%83%A4%E3%83%83%E3%83%84%E3%82%A3%E3%83%BC)
 
-## Creating a project
+## Usage
 
-If you're seeing this, you've probably already done this step. Congrats!
+### Server
 
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+cd boardgame-ws-server
+npm i
+npm run start
 ```
 
-## Developing
+use `PORT` env to set port (default is 4567)
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+### Front
 
 ```bash
+cd frontend
+npm i
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+use `PUBLIC_WS` env to set websocket host (default is ws://localhost:4567)
