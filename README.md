@@ -1,7 +1,7 @@
 ## Rule
 
-1. Select Card to Battle
-2. If you won, get 1point
+1. Select card to battle
+2. If your card is greater than or equal to opponent's, get 1point
 
 ## Usage
 
