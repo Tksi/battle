@@ -40,12 +40,14 @@
     margin: 5px;
   }
 
-  .clickable:hover {
-    transform: translateY(-3px);
-  }
+  @media (hover: hover) {
+    .clickable:hover {
+      transform: translateY(-3px);
+    }
 
-  .clickable:hover span {
-    text-shadow: 3px 3px 0 var(--shadowColor);
+    .clickable:hover span {
+      text-shadow: 3px 3px 0 var(--shadowColor);
+    }
   }
 
   .hidden {
