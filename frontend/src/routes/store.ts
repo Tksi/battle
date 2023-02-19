@@ -39,14 +39,15 @@ gameStateW.subscribe((state) => {
   }
 });
 
+export const setGameId = () =>
+  (location.href = `${location.origin}?${new URLSearchParams([
+    ['gameId', `GAME-${uuidv4()}`],
+  ]).toString()}`);
+
 if (browser) {
   ws = new WebSocket(PUBLIC_WS ?? 'ws://localhost:4567');
 
   gameId = new URL(location.href).searchParams.get('gameId') as GameId;
-  const setGameId = () =>
-    (location.href = `${location.origin}?${new URLSearchParams([
-      ['gameId', `GAME-${uuidv4()}`],
-    ]).toString()}`);
 
   if (gameId === null) {
     setGameId();

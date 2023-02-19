@@ -1,7 +1,7 @@
 <script lang="ts">
   import BattleZone from './BattleZone.svelte';
   import Card from './Card.svelte';
-  import { gameStateR, gameStateW, myUserId } from '$/store';
+  import { gameStateR, gameStateW, myUserId, setGameId } from '$/store';
 
   $: myUserState = $gameStateR.userStates?.get($myUserId);
 </script>
@@ -10,6 +10,13 @@
   <title>Battle</title>
   <meta name="robots" content="noindex nofollow" />
 </svelte:head>
+
+{#if ($gameStateR.publicState?.turnUserId ?? null) === null}
+  <div class="message">
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    share URL or make <span class="room" on:click={setGameId}> new Room</span>
+  </div>
+{/if}
 
 <div class="container">
   <BattleZone />
@@ -31,6 +38,18 @@
 </div>
 
 <style>
+  .message {
+    position: fixed;
+    top: 0;
+    background-color: white;
+    width: 100dvw;
+    text-align: center;
+  }
+  .room {
+    user-select: none;
+    text-decoration: underline;
+    color: blue;
+  }
   .cardContainer {
     display: flex;
     justify-content: center;
