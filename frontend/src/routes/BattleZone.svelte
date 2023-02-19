@@ -12,7 +12,7 @@
 
     // 初期化
     for (const [, userState] of $gameStateR.userStates) {
-      userState.score = 0;
+      userState.score = 10;
       userState.clickable = true;
       userState.battleCard = -1;
       userState.cardArr = new Array(cardLen)
@@ -73,6 +73,8 @@
 
       for (const [, userState] of userStateArr) {
         if (userState.battleCard === maxNumber) {
+          // bidを足したい
+          console.log(userStateArr.map());
           userState.score++;
         }
       }
@@ -95,22 +97,47 @@
 </script>
 
 <div class="container">
-  <span
-    class="battleCardContainer"
-    class:winner={isWinner(userStateArr[0]?.[1])}
-  >
-    <Card number={showCard(userStateArr[0]?.[0], userStateArr[0]?.[1])} />
-    <div>
-      {userStateArr[0]?.[1].userName ?? ''}
-      {userStateArr[0]?.[1].score ?? ''}
-    </div>
-  </span>
+  {#if userStateArr.length > 0}
+    <span
+      class="battleCardContainer"
+      class:winner={isWinner(userStateArr[0][1])}
+    >
+      <Card number={showCard(userStateArr[0][0], userStateArr[0][1])} />
+      <div>
+        {userStateArr[0][1].userName}
+        {(userStateArr[0][1].score ?? 0) - (userStateArr[0][1].bid ?? 0)}
+      </div>
+      <input
+        class="bid"
+        type="number"
+        placeholder="0"
+        bind:value={userStateArr[0][1].bid}
+        on:change={() => ($gameStateW = $gameStateR)}
+        max={userStateArr[0][1].score ?? 0}
+        min={0}
+        disabled={$myUserId === userStateArr[0]?.[0]}
+      />
+    </span>
+  {/if}
 
   {#each userStateArr.slice(1) as [userId, userState]}
     <span class="vs">vs</span>
     <span class="battleCardContainer" class:winner={isWinner(userState)}>
       <Card number={showCard(userId, userState)} />
-      <div>{userState.userName} {userState.score ?? ''}</div>
+      <div>
+        {userState.userName}
+        {(userState.score ?? 0) - (userState.bid ?? 0)}
+      </div>
+      <input
+        class="bid"
+        type="number"
+        placeholder="0"
+        bind:value={userState.bid}
+        on:change={() => ($gameStateW = $gameStateR)}
+        max={userState.score ?? 0}
+        min={0}
+        disabled={$myUserId === userId}
+      />
     </span>
   {/each}
 
@@ -121,6 +148,10 @@
 </div>
 
 <style>
+  .bid {
+    width: 3.5rem;
+    font-size: 2rem;
+  }
   .container {
     font-size: min(5vw, 1.5rem);
     display: flex;
