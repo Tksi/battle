@@ -1,7 +1,8 @@
 ## Rule
 
 1. Select card to battle
-2. If your card is greater than or equal to opponent's, get 1point
+1. Decide how much to bid
+1. If your card is greater than or equal to opponent's, get all wagered point
 
 ## Usage
 
