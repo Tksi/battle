@@ -6,13 +6,13 @@
   import { gameStateR, gameStateW, myUserId } from '$/store';
 
   const startGame = () => {
-    const cardLen = 5;
+    const cardLen = 10;
     // ターンベースではないのでnull以外ならなんでもよい
     $gameStateR.publicState.turnUserId = $myUserId;
 
     // 初期化
     for (const [, userState] of $gameStateR.userStates) {
-      userState.score = 10;
+      userState.score = 5;
       userState.clickable = true;
       userState.battleCard = -1;
       userState.cardArr = new Array(cardLen)
@@ -74,8 +74,10 @@
       for (const [, userState] of userStateArr) {
         if (userState.battleCard === maxNumber) {
           // bidを足したい
-          console.log(userStateArr.map());
-          userState.score++;
+          userState.score += userStateArr.reduce(
+            (a, [, userState]) => a + (userState.bid ?? 0),
+            0
+          );
         }
       }
 
@@ -87,6 +89,7 @@
           for (const [, userState] of userStateArr) {
             userState.battleCard = -1;
             userState.clickable = true;
+            userState.bid = 0;
           }
 
           $gameStateW = $gameStateR;
@@ -110,12 +113,15 @@
       <input
         class="bid"
         type="number"
-        placeholder="0"
+        placeholder="bid"
         bind:value={userStateArr[0][1].bid}
-        on:change={() => ($gameStateW = $gameStateR)}
+        on:change={() => {
+          userStateArr[0][1].bid = Math.trunc(userStateArr[0][1].bid);
+          $gameStateW = $gameStateR;
+        }}
         max={userStateArr[0][1].score ?? 0}
         min={0}
-        disabled={$myUserId === userStateArr[0]?.[0]}
+        disabled={$myUserId !== userStateArr[0]?.[0]}
       />
     </span>
   {/if}
@@ -131,12 +137,15 @@
       <input
         class="bid"
         type="number"
-        placeholder="0"
+        placeholder="bid"
         bind:value={userState.bid}
-        on:change={() => ($gameStateW = $gameStateR)}
+        on:change={() => {
+          userState.bid = Math.trunc(userState.bid);
+          $gameStateW = $gameStateR;
+        }}
         max={userState.score ?? 0}
         min={0}
-        disabled={$myUserId === userId}
+        disabled={$myUserId !== userId}
       />
     </span>
   {/each}
