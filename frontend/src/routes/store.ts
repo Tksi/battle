@@ -12,6 +12,7 @@ export type StateUser = {
   battleCard: number;
   score: number;
   clickable: boolean;
+  bid: number;
 };
 
 export const myUserId = writable<UserId>();
