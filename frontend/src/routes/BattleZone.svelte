@@ -4,8 +4,6 @@
   import type { StateUser } from '$/store';
   import type { UserId, UserState } from '$types';
   import { gameStateR, gameStateW, myUserId } from '$/store';
-  import { tweened } from 'svelte/motion';
-  import { cubicOut } from 'svelte/easing';
 
   const startGame = () => {
     const cardLen = 5;
