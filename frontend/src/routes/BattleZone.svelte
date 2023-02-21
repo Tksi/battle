@@ -4,15 +4,17 @@
   import type { StateUser } from '$/store';
   import type { UserId, UserState } from '$types';
   import { gameStateR, gameStateW, myUserId } from '$/store';
+  import { tweened } from 'svelte/motion';
+  import { cubicOut } from 'svelte/easing';
 
   const startGame = () => {
-    const cardLen = 10;
+    const cardLen = 5;
     // ターンベースではないのでnull以外ならなんでもよい
     $gameStateR.publicState.turnUserId = $myUserId;
 
     // 初期化
     for (const [, userState] of $gameStateR.userStates) {
-      userState.score = 5;
+      userState.score = 10;
       userState.clickable = true;
       userState.battleCard = -1;
       userState.cardArr = new Array(cardLen)
